@@ -4,7 +4,7 @@ A 3-line status bar for [Claude Code](https://claude.com/claude-code), showing m
 
 ## Preview
 
-_Screenshot coming soon._
+![statusline preview](screenshot.png)
 
 ## Layout
 
