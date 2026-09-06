@@ -78,6 +78,14 @@ if [ -n "$seven_pct" ]; then
     week_seg="${label_c}week${reset} ${seven_color}${seven_pct_i}%${reset}"
 fi
 
+# ---- git branch (only inside a git repo) ----
+branch_c='\033[38;5;114m'    # green - git branch
+cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // empty')
+branch_seg=""
+if [ -n "$cwd" ] && branch=$(git -C "$cwd" branch --show-current 2>/dev/null) && [ -n "$branch" ]; then
+    branch_seg="${branch_c}🌿 ${branch}${reset}"
+fi
+
 # ---- assemble (2 lines) ----
 line1="${model_seg}${sep}${ctx_seg}"
 
@@ -87,6 +95,7 @@ if [ -n "$window_seg" ] && [ -n "$week_seg" ]; then
 else
     line2="${window_seg}${week_seg}"
 fi
+[ -n "$branch_seg" ] && [ -n "$line2" ] && line2="${branch_seg} ${dim}|${reset} ${line2}"
 
 out="$line1"
 [ -n "$line2" ] && out+=$'\n'"$line2"
