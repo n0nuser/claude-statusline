@@ -10,11 +10,11 @@ A 2-line status bar for [Claude Code](https://claude.com/claude-code), showing m
 
 ```
 Opus 5 (medium) | 0 ░░░░░░░░░░ 1.0m (0%)
-window 5h 0% · week 0%
+window 5h 0% (3h12m) · week 0%
 ```
 
 1. **Model + effort | context bar**: used tokens, a 10-cell bar, total context window, and % used
-2. **window 5h | week**: 5-hour and 7-day rate limit usage
+2. **window 5h | week**: 5-hour and 7-day rate limit usage, with a countdown to when the 5-hour window resets
 
 Percentages and the context bar are color-coded: green (<50%) → yellow (≥50%) → orange (≥70%) → red (≥90%).
 

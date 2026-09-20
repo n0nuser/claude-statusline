@@ -36,6 +36,15 @@ fmt_tokens() {
     else printf "%d" "$n"; fi
 }
 
+fmt_countdown() {
+    local secs=$1
+    [ "$secs" -lt 0 ] && secs=0
+    local h=$(( secs / 3600 ))
+    local m=$(( (secs % 3600) / 60 ))
+    if [ "$h" -gt 0 ]; then printf "%dh%02dm" "$h" "$m"
+    else printf "%dm" "$m"; fi
+}
+
 # ---- model + effort ----
 model_name=$(echo "$input" | jq -r '.model.display_name // "Claude"')
 effort=$(echo "$input" | jq -r '.effort.level // empty')
@@ -68,6 +77,13 @@ if [ -n "$five_pct" ]; then
     five_pct_i=$(printf '%.0f' "$five_pct")
     five_color=$(usage_color "$five_pct_i")
     window_seg="${label_c}window 5h${reset} ${five_color}${five_pct_i}%${reset}"
+
+    five_resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
+    if [ -n "$five_resets_at" ]; then
+        now=$(date +%s)
+        remaining=$(( five_resets_at - now ))
+        window_seg="${window_seg} ${dim}(${reset}${label_c}$(fmt_countdown "$remaining")${reset}${dim})${reset}"
+    fi
 fi
 
 seven_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
