@@ -24,7 +24,6 @@ Line 2 is omitted when Claude Code supplies no rate-limit data.
 
 ```bash
 git clone https://github.com/n0nuser/claude-statusline.git ~/.claude/claude-statusline
-chmod +x ~/.claude/claude-statusline/statusline.sh
 ```
 
 Add to `~/.claude/settings.json`:
@@ -33,16 +32,20 @@ Add to `~/.claude/settings.json`:
 {
   "statusLine": {
     "type": "command",
-    "command": "bash ~/.claude/claude-statusline/statusline.sh"
+    "command": "jq -nrj -f ~/.claude/claude-statusline/statusline.jq"
   }
 }
 ```
 
+On Windows, use full paths, e.g. `"C:/path/to/jq.exe" -nrj -f "C:/Users/<you>/.claude/claude-statusline/statusline.jq"`.
+
 Restart Claude Code (or start a new session) to pick up the change.
+
+It is a single `jq` program (no shell, no subprocesses), since the status line runs on every refresh of every session.
 
 ## Requirements
 
-- `bash`, `jq`
+- `jq` (1.6+)
 - A terminal with 256-color support
 
 ## Update
