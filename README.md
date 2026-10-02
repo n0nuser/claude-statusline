@@ -37,7 +37,11 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
-On Windows, use full paths, e.g. `"C:/path/to/jq.exe" -nrj -f "C:/Users/<you>/.claude/claude-statusline/statusline.jq"`.
+On Windows, use full paths and add `-b` so jq writes `\n` instead of `\r\n` (which breaks line 2). `-b` needs jq 1.7+; jq 1.6 rejects it.
+
+```
+"C:/path/to/jq.exe" -nrjb -f "C:/Users/<you>/.claude/claude-statusline/statusline.jq"
+```
 
 Restart Claude Code (or start a new session) to pick up the change.
 
