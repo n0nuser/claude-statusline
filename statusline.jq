@@ -35,6 +35,15 @@ def fmt_countdown:
     | (($s % 3600) / 60 | floor) as $m
     | if $h > 0 then "\($h)h\(if $m < 10 then "0" else "" end)\($m)m" else "\($m)m" end;
 
+# Weekly reset: days, or hours (with minutes) when under a day.
+def fmt_countdown_days:
+    (if . < 0 then 0 else . end) as $s
+    | ($s / 3600 | floor) as $h
+    | if $h >= 24 then "\($h / 24 | floor)d\($h % 24)h"
+      elif $h > 0 then "\($h)h\(if ($s % 3600) / 60 | floor < 10 then "0" else "" end)\(($s % 3600) / 60 | floor)m"
+      else "\(($s % 3600) / 60 | floor)m"
+      end;
+
 def whole: if type == "number" then floor else null end;
 def pct: if type == "number" then . + 0.5 | floor else null end;
 
@@ -67,8 +76,12 @@ def pct: if type == "number" then . + 0.5 | floor else null end;
        end
    end) as $window_seg
 | (.rate_limits.seven_day.used_percentage | pct) as $seven
+| (.rate_limits.seven_day.resets_at | whole) as $week_resets
 | (if $seven == null then ""
    else label_c + "week" + reset + " " + ($seven | usage_color) + "\($seven)%" + reset
+     + if $week_resets == null then ""
+       else " " + dim + "(" + reset + label_c + ($week_resets - (now | floor) | fmt_countdown_days) + reset + dim + ")" + reset
+       end
    end) as $week_seg
 
 # ---- assemble (2 lines) ----
